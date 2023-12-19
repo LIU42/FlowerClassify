@@ -20,10 +20,8 @@ valid_transform = transforms.Compose([
 
 train_set = datasets.ImageFolder(root = "./dataset/train", transform = train_transform)
 train_len = len(train_set)
-
 valid_set = datasets.ImageFolder(root = "./dataset/valid", transform = valid_transform)
 valid_len = len(valid_set)
-
 train_loader = data.DataLoader(train_set, batch_size = 32, shuffle = True, num_workers = 0)
 valid_loader = data.DataLoader(valid_set, batch_size = 32, shuffle = True, num_workers = 0)
 
@@ -55,7 +53,6 @@ for epoch in range(epoch_time):
 
     model.eval()
     accuracy = 0
-
     with torch.no_grad():
         for step, (inputs, labels) in enumerate(valid_loader, start = 0):
             outputs = model(inputs)
@@ -63,11 +60,9 @@ for epoch in range(epoch_time):
             accuracy += (predict == labels).sum().item()
 
         valid_accuracy = accuracy / valid_len
-
         if valid_accuracy > best_accuracy:
             best_accuracy = valid_accuracy
             torch.save(model, best_path)
-
         torch.save(model, last_path)
 
         print("\tEpoch: {}\tLoss: {:.3f}\tAccuracy: {:.3f}".format(epoch, running_loss / len(train_loader), valid_accuracy))

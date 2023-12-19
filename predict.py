@@ -21,7 +21,6 @@ model = torch.load("./weights/AlexNet-Best.pt")
 model.eval()
 
 def letterbox(image: cv2.Mat, size: int) -> cv2.Mat:
-
     image_width = image.shape[1]
     image_height = image.shape[0]
     aspect_ratio = image_width / image_height
@@ -43,32 +42,25 @@ def letterbox(image: cv2.Mat, size: int) -> cv2.Mat:
     return canvas
 
 def transform_tensor(image: cv2.Mat) -> Tensor:
-
     image_tensor = transform(image)
     image_tensor = torch.unsqueeze(image_tensor, dim = 0)
-
     return image_tensor
 
 def predict_image(image: cv2.Mat) -> dict:
-
     image_letter = letterbox(image, 224)
     input_tensor = transform_tensor(image_letter)
-
     with torch.no_grad():
         outputs = torch.squeeze(model(input_tensor))
         predict = torch.softmax(outputs, dim = 0)
         class_index = torch.argmax(predict).numpy()
-
     return { "name": classes_dict[str(class_index)], "confidence": "{:.3f}".format(predict[class_index].item()) }
 
 def predict_test_set() -> None:
-
     test_transform = transforms.Compose([
         transforms.Resize((224, 224)),
         transforms.ToTensor(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
-
     test_set = datasets.ImageFolder(root = "./dataset/test", transform = test_transform)
     test_len = len(test_set)
     test_loader = data.DataLoader(test_set)
@@ -79,13 +71,11 @@ def predict_test_set() -> None:
             outputs = model(inputs)
             predict = torch.max(outputs, dim = 1)[1]
             test_accuracy += (predict == labels).sum().item()
-
             print("\rProgress: [{}/{}]".format(step, len(test_loader)), end = "")
 
     print("\tAccuracy: {:.3f}".format(test_accuracy / test_len))
 
 def predict_images_folder() -> None:
-
     print("\n---------- Predict Images Start ----------\n")
 
     images_path = "./images/"
@@ -105,6 +95,5 @@ def predict_images_folder() -> None:
     print("\n---------- Predict Images Finished ----------\n")
 
 if __name__ == "__main__":
-
     predict_test_set()
     predict_images_folder()

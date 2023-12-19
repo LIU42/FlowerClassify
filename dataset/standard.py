@@ -20,6 +20,5 @@ for image_path in image_list:
 
     new_image = image[top:top + size, left:left + size :]
     new_image = cv2.resize(new_image, (224, 224))
-
     cv2.imwrite(folder_path + image_path, new_image)
     
