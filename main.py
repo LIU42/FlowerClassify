@@ -19,7 +19,8 @@ def flower_classify() -> Response:
     except KeyError:
         return jsonify(result_code = 10001, result_data = "image not found")
     
-    return jsonify(result_code = 10000, result_data = predict.predict_image(image_origin))
+    name, confidence = predict.predict_image(image_origin)
+    return jsonify(result_code = 10000, result_data = dict(name = name, confidence = f"{confidence:.3f}"))
     
 if __name__ == "__main__":
     application.run("0.0.0.0", 9500)

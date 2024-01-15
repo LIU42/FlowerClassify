@@ -49,7 +49,7 @@ for epoch in range(epoch_time):
         optimizer.step()
         running_loss += loss.item()
 
-        print("\rTrain Loss: {:.3f} [{}/{}]".format(loss, step, len(train_loader)), end = "")
+        print(f"\rTrain Loss: {loss:.3f} [{step}/{len(train_loader)}]", end = "")
 
     model.eval()
     accuracy = 0
@@ -65,6 +65,6 @@ for epoch in range(epoch_time):
             torch.save(model, best_path)
         torch.save(model, last_path)
 
-        print("\tEpoch: {}\tLoss: {:.3f}\tAccuracy: {:.3f}".format(epoch, running_loss / len(train_loader), valid_accuracy))
+        print(f"\tEpoch: {epoch}\tLoss: {running_loss / len(train_loader):.3f}\tAccuracy: {valid_accuracy:.3f}")
 
 print("\n---------- Training Finished ----------\n")
