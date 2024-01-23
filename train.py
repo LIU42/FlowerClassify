@@ -19,16 +19,16 @@ valid_transform = transforms.Compose([
 ])
 
 train_set = datasets.ImageFolder(root = "./dataset/train", transform = train_transform)
-train_len = len(train_set)
+train_length = len(train_set)
 valid_set = datasets.ImageFolder(root = "./dataset/valid", transform = valid_transform)
-valid_len = len(valid_set)
+valid_length = len(valid_set)
 train_loader = data.DataLoader(train_set, batch_size = 32, shuffle = True, num_workers = 0)
 valid_loader = data.DataLoader(valid_set, batch_size = 32, shuffle = True, num_workers = 0)
 
-load_path = "./weights/AlexNet-Best.pt"
-best_path = "./weights/AlexNet-Best.pt"
-last_path = "./weights/AlexNet-Last.pt"
-epoch_time = 10
+load_path = "./weights/ClassifyNet-Best.pt"
+best_path = "./weights/ClassifyNet-Best.pt"
+last_path = "./weights/ClassifyNet-Last.pt"
+epoch_times = 10
 best_accuracy = 0.96
 
 model = torch.load(load_path)
@@ -37,7 +37,7 @@ optimizer = optim.AdamW(model.parameters(), lr = 0.00005)
 
 print("\n---------- Training Start ----------\n")
 
-for epoch in range(epoch_time):
+for epoch in range(epoch_times):
     running_loss = 0
     model.train()
 
@@ -59,7 +59,7 @@ for epoch in range(epoch_time):
             predict = torch.max(outputs, dim = 1)[1]
             accuracy += (predict == labels).sum().item()
 
-        valid_accuracy = accuracy / valid_len
+        valid_accuracy = accuracy / valid_length
         if valid_accuracy > best_accuracy:
             best_accuracy = valid_accuracy
             torch.save(model, best_path)
