@@ -18,9 +18,7 @@ def flower_classify() -> Response:
         image_origin = cv2.cvtColor(image_decode, cv2.COLOR_BGR2RGB)
     except KeyError:
         return flask.jsonify(result_code = 10001, result_data = "image not found")
-    
-    name, confidence = classifier.predict(image_origin)
-    return flask.jsonify(result_code = 10000, result_data = dict(name = name, confidence = f"{confidence:.3f}"))
+    return flask.jsonify(result_code = 10000, result_data = classifier(image_origin))
     
 if __name__ == "__main__":
     application.run("0.0.0.0", 9500)

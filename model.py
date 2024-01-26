@@ -15,4 +15,4 @@ class ClassifyNet(nn.Module):
         return self.model(input_tensor)
     
 if __name__ == "__main__":
-    torch.save(ClassifyNet(), "./weights/ClassifyNet-Pretrain.pt")
+    torch.save(ClassifyNet().state_dict(), "./weights/ClassifyNet-Pretrain.pt")
