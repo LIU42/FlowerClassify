@@ -6,10 +6,10 @@ from predict import FlowerClassifier
 from flask import Flask
 from flask import Response
 
-application = Flask(__name__)
+app = Flask(__name__)
 classifier = FlowerClassifier()
 
-@application.post("/flowerclassify")
+@app.post("/flowerclassify")
 def flower_classify() -> Response:
     try:
         image_file = flask.request.files["image"]
@@ -21,4 +21,4 @@ def flower_classify() -> Response:
     return flask.jsonify(result_code = 10000, result_data = classifier(image_origin))
     
 if __name__ == "__main__":
-    application.run("0.0.0.0", 9500)
+    app.run("0.0.0.0", 9500)

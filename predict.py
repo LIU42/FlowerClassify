@@ -50,7 +50,7 @@ class FlowerClassifier:
 
     def __call__(self, image: cv2.Mat) -> dict[str, str]:
         name, confidence = self.predict(image)
-        return dict(name = name, confidence = f"{confidence:.3f}")
+        return dict[str, str](name = name, confidence = f"{confidence:.3f}")
 
     def predict(self, image: cv2.Mat) -> tuple[str, float]:
         input_tensor = self.transformer(image)
