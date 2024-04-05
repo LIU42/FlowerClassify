@@ -3,7 +3,7 @@ import os
 import torch
 import numpy
 import json
-import timeit
+import time
 
 from model import ClassifyNet
 from torch.utils import data
@@ -83,12 +83,15 @@ class FlowerClassifier:
     def test_image_dir(self, images_path: str = "./images", result_path: str = "./results") -> None:
         image_name_list = os.listdir(images_path)
         total_times = 0
+
         for image_name in image_name_list:
             image = cv2.cvtColor(cv2.imread(f"{images_path}/{image_name}"), cv2.COLOR_BGR2RGB)
-            start_times = timeit.default_timer()
+            start_times = time.perf_counter()
             name, confidence = self.predict(image)
-            delta_times = timeit.default_timer() - start_times
+            end_times = time.perf_counter()
+            delta_times = end_times - start_times
             total_times += delta_times
+
             cv2.putText(image, name, (0, 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
             cv2.imwrite(f"{result_path}/result_{image_name}", cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
             print(f"Image: {image_name:<12}Name: {name:<15}Confidence: {confidence:<8.3f}Times: {delta_times:.3f}s")
