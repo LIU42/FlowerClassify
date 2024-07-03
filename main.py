@@ -1,4 +1,6 @@
 import flask
+import json
+
 from flask import Flask
 from flask import Response
 
@@ -6,16 +8,18 @@ from predict import FlowerClassifier
 from utils import ImageUtils
 
 app = Flask(__name__)
-classifier = FlowerClassifier()
+classifier = FlowerClassifier(device='CPU', precision='fp32')
 
-@app.post("/flowerclassify")
-def flower_classify() -> Response:
+
+@app.post('/flowerclassify')
+def flower_classify():
     try:
-        image = ImageUtils.from_stream(flask.request.files["image"].stream.read())
-        return flask.jsonify(result_code=10000, result_data=classifier(image))
+        name, confidence = classifier(ImageUtils.read_stream(flask.request.files['image'].stream))
     except KeyError:
-        return flask.jsonify(result_code=10001, result_data="image not found")
-
-
-if __name__ == "__main__":
-    app.run("0.0.0.0", 9500)
+        return Response(status=400)
+    
+    response_body = json.dumps({
+        'name': name,
+        'confidence': confidence,
+    })
+    return Response(status=200, mimetype='application/json', response=response_body)

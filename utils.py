@@ -1,34 +1,51 @@
 import cv2
-import numpy
+import numpy as np
+
 
 class ImageUtils:
 
     @staticmethod
-    def from_stream(image_bytes: bytes, convert: bool = True) -> cv2.Mat:
-        stream_image = numpy.frombuffer(image_bytes, dtype=numpy.int8)
-        decode_image = cv2.imdecode(stream_image, cv2.IMREAD_UNCHANGED)
-        if convert:
-            return cv2.cvtColor(decode_image, cv2.COLOR_BGR2RGB)
-        return decode_image
-    
+    def read_stream(stream):
+        arrayed_image = np.frombuffer(stream.read(), dtype=np.uint8)
+        decoded_image = cv2.imdecode(arrayed_image, cv2.IMREAD_UNCHANGED)
+        return decoded_image
+
     @staticmethod
-    def letterbox(image: cv2.Mat, new_size: int = 224, background_color: int = 127) -> cv2.Mat:
-        aspect_ratio = image.shape[1] / image.shape[0]
-        if image.shape[1] > image.shape[0]:
-            image_resize = cv2.resize(image, (new_size, int(new_size / aspect_ratio)))
+    def letterbox(image, size, padding_color):
+        current_size = max(image.shape[0], image.shape[1])
+
+        x1 = (current_size - image.shape[1]) >> 1
+        y1 = (current_size - image.shape[0]) >> 1
+
+        x2 = x1 + image.shape[1]
+        y2 = y1 + image.shape[0]
+
+        background = np.full((current_size, current_size, 3), padding_color, dtype=np.uint8)
+        background[y1:y2, x1:x2] = image
+
+        return cv2.resize(background, (size, size))
+
+    @staticmethod
+    def convert_inputs(image, precision):
+        inputs = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).transpose((2, 0, 1))
+        inputs = inputs / 255.0
+        inputs = np.expand_dims(inputs, axis=0)
+
+        if precision == 'fp16':
+            return inputs.astype(np.float16)
         else:
-            image_resize = cv2.resize(image, (int(new_size * aspect_ratio), new_size))
-
-        background = numpy.ones((new_size, new_size, 3), dtype=numpy.uint8) * background_color
-        x = (new_size - image_resize.shape[1]) // 2
-        y = (new_size - image_resize.shape[0]) // 2
-        background[y:y + image_resize.shape[0], x:x + image_resize.shape[1]] = image_resize
-
-        return background
-
-
-class PlottingUtils:
+            return inputs.astype(np.float32)
 
     @staticmethod
-    def label(image: cv2.Mat, label: str, color: tuple[int, int, int] = (255, 0, 0)) -> cv2.Mat:
-        return cv2.putText(image, label, (0, 25), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2)
+    def preprocess(image, size, padding_color, precision):
+        return ImageUtils.convert_inputs(ImageUtils.letterbox(image, size, padding_color), precision)
+
+
+class ResultUtils:
+
+    @staticmethod
+    def parse_outputs(outputs):
+        probability_outputs = np.exp(outputs) / np.sum(np.exp(outputs), axis=0)
+        class_index = np.argmax(probability_outputs)
+
+        return str(class_index), probability_outputs[class_index]

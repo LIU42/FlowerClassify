@@ -1,20 +1,24 @@
 import torch
+
 from torch import nn
 from torchvision import models
 
+
 class ClassifyNet(nn.Module):
 
-    def __init__(self, num_classes: int = 10, pretrain: bool = False) -> None:
+    def __init__(self, num_classes=10, pretrain=False):
         super().__init__()
-        self.model = models.alexnet(weights=(models.AlexNet_Weights.DEFAULT if pretrain else None))
-        self.model.classifier[6] = nn.Linear(4096, num_classes)
 
-    def __call__(self, inputs: torch.Tensor) -> torch.Tensor:
-        return self.forward(inputs)
+        if pretrain:
+            self.backbone = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
+        else:
+            self.backbone = models.resnet18()
 
-    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
-        return self.model(inputs)
+        self.backbone.fc = nn.Linear(in_features=512, out_features=num_classes)
+
+    def forward(self, inputs):
+        return self.backbone(inputs)
 
 
-if __name__ == "__main__":
-    torch.save(ClassifyNet().state_dict(), "./weights/ClassifyNet-Pretrain.pt")
+if __name__ == '__main__':
+    torch.save(ClassifyNet(pretrain=True).state_dict(), 'weights/pretrain.pt')
