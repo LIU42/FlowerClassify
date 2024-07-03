@@ -13,7 +13,7 @@ COPY ./utils.py /home/app/utils.py
 COPY ./weights/flower-classify-fp32.onnx /home/app/weights/flower-classify-fp32.onnx
 COPY ./dataset/classes.json /home/app/dataset/classes.json
 
-RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple --break-system-packages Flask onnxruntime
+RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple --break-system-packages --no-cache-dir Flask onnxruntime
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1

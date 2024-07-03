@@ -2,6 +2,8 @@
 
 **基于 ResNet 的花卉分类识别系统，能有效区分 10 中不同类别的花卉。**
 
+
+
 #### 项目简介
 
 本项目为一个基础的花卉分类识别系统，采用 ResNet18 作为主干网络，包含模型的训练、测试以及线上部署（提供容器化部署）。
@@ -16,7 +18,7 @@
 
 *<u>训练数据集来自 [Kaggle](https://www.kaggle.com/)，融合了多个数据集并进行了数据清洗，基于预训练模型进行训练，在当前数据集下准确率超过 98%。</u>*
 
-
+ 
 
 #### 使用说明
 
@@ -68,12 +70,10 @@ Web 服务接口描述如下：
 ```shell
 # 构建镜像
 cd FlowerClassify
-docker build --network="host" -t flowerclassify:1.1.0 .
+docker build -t flowerclassify:1.1.0 -f docker/Dockerfile .
 
 # 创建容器并运行
 docker run -it --rm -p 9500:9500 --name flowerclassify flowerclassify:1.1.0
 ```
 
 *<u>以上仅为一个示例，详情请参考 [Docker](https://docs.docker.com/) 文档。</u>*
-
-
