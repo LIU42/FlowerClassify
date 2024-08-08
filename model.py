@@ -21,4 +21,4 @@ class ClassifyNet(nn.Module):
 
 
 if __name__ == '__main__':
-    torch.save(ClassifyNet(pretrain=True).state_dict(), 'weights/dev/pretrain.pt')
+    torch.save(ClassifyNet(pretrain=True).state_dict(), 'weights/develop/pretrain.pt')

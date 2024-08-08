@@ -163,5 +163,5 @@ datasets/test/*
 datasets/train/*
 datasets/valid/*
 images/*
-weights/dev/*
-weights/pro/*
+weights/develop/*
+weights/product/*

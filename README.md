@@ -62,10 +62,10 @@ Web 服务接口描述如下：
 ```shell
 # 构建镜像
 cd FlowerClassify
-docker build -t flowerclassify:1.2.0 -f docker/Dockerfile .
+docker build -t flowerclassify:1.2.1 -f docker/Dockerfile .
 
 # 创建容器并运行
-docker run --rm -p 9500:9500 --name flowerclassify flowerclassify:1.2.0
+docker run --rm -p 9500:9500 --name flowerclassify flowerclassify:1.2.1
 ```
 
 *<u>以上仅为一个示例，详情请参考 [Docker](https://docs.docker.com/) 文档。</u>*

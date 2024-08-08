@@ -23,7 +23,7 @@ else:
 
 model = ClassifyNet()
 model.to(device)
-model.load_state_dict(torch.load('weights/dev/best.pt', map_location=device))
+model.load_state_dict(torch.load('weights/develop/best.pt', map_location=device))
 
 print(f'\n---------- Test At: {str(device).upper()} ----------\n')
 

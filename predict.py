@@ -16,7 +16,7 @@ class FlowerClassifier:
         with open('datasets/classes.yaml', 'r') as classes_yaml:
             self.classes = yaml.load(classes_yaml, yaml.SafeLoader)['classes']
 
-        self.session = ort.InferenceSession(f'weights/pro/classify-{precision}.onnx', providers=providers)
+        self.session = ort.InferenceSession(f'weights/product/classify-{precision}.onnx', providers=providers)
         self.precision = precision
 
     def __call__(self, image):

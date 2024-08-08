@@ -21,9 +21,9 @@ valid_dataset = ImageFolder(root='datasets/valid', transform=transform)
 train_loader = DataLoader(dataset=train_dataset, batch_size=32, shuffle=True, num_workers=0, pin_memory=True)
 valid_loader = DataLoader(dataset=valid_dataset, batch_size=32, shuffle=True, num_workers=0, pin_memory=True)
 
-load_path = 'weights/dev/pretrain.pt'
-best_path = 'weights/dev/best.pt'
-last_path = 'weights/dev/last.pt'
+load_path = 'weights/develop/pretrain.pt'
+best_path = 'weights/develop/best.pt'
+last_path = 'weights/develop/last.pt'
 
 if torch.cuda.is_available():
     device = torch.device('cuda')
