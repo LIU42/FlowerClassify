@@ -5,12 +5,6 @@ import numpy as np
 class ImageUtils:
 
     @staticmethod
-    def read_stream(stream):
-        arrayed_image = np.frombuffer(stream.read(), dtype=np.uint8)
-        decoded_image = cv2.imdecode(arrayed_image, cv2.IMREAD_UNCHANGED)
-        return decoded_image
-
-    @staticmethod
     def letterbox(image, size, padding_color):
         current_size = max(image.shape[0], image.shape[1])
 
@@ -46,6 +40,5 @@ class ResultUtils:
     @staticmethod
     def parse_outputs(outputs):
         probability_outputs = np.exp(outputs) / np.sum(np.exp(outputs), axis=0)
-        class_index = np.argmax(probability_outputs)
 
-        return str(class_index), probability_outputs[class_index]
+        return np.argmax(probability_outputs), probability_outputs

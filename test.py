@@ -13,7 +13,7 @@ transform = transforms.Compose([
     transforms.ToTensor(),
 ])
 
-test_dataset = ImageFolder(root='dataset/test', transform=transform)
+test_dataset = ImageFolder(root='datasets/test', transform=transform)
 test_loader = DataLoader(dataset=test_dataset, num_workers=0, batch_size=16, pin_memory=True)
 
 if torch.cuda.is_available():
@@ -23,7 +23,7 @@ else:
 
 model = ClassifyNet()
 model.to(device)
-model.load_state_dict(torch.load('weights/trained-best.pt', map_location=device))
+model.load_state_dict(torch.load('weights/dev/best.pt', map_location=device))
 
 print(f'\n---------- Test At: {str(device).upper()} ----------\n')
 

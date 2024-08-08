@@ -1,4 +1,4 @@
-import json
+import yaml
 import onnxruntime as ort
 
 from utils import ImageUtils
@@ -13,21 +13,18 @@ class FlowerClassifier:
         else:
             providers = ['CPUExecutionProvider']
 
-        with open('dataset/classes.json', mode='r', encoding='utf-8') as classes_file:
-            self.classes = json.load(classes_file)
+        with open('datasets/classes.yaml', 'r') as classes_yaml:
+            self.classes = yaml.load(classes_yaml, yaml.SafeLoader)['classes']
 
-        self.session = ort.InferenceSession(f'weights/flower-classify-{precision}.onnx', providers=providers)
+        self.session = ort.InferenceSession(f'weights/pro/classify-{precision}.onnx', providers=providers)
         self.precision = precision
 
     def __call__(self, image):
-        return self.classify(image)
-
-    def classify(self, image):
         inputs = ImageUtils.preprocess(image, size=224, padding_color=127, precision=self.precision)
 
         outputs = self.session.run(None, {
             'input': inputs,
         })
-        class_index, confidence = ResultUtils.parse_outputs(outputs[0].squeeze())
+        class_index, confidences = ResultUtils.parse_outputs(outputs[0].squeeze())
 
-        return self.classes[class_index], f'{confidence:.3f}'
+        return self.classes[class_index], f'{confidences[class_index]:.3f}'

@@ -15,15 +15,15 @@ transform = transforms.Compose([
     transforms.ToTensor(),
 ])
 
-train_dataset = ImageFolder(root='dataset/train', transform=transform)
-valid_dataset = ImageFolder(root='dataset/valid', transform=transform)
+train_dataset = ImageFolder(root='datasets/train', transform=transform)
+valid_dataset = ImageFolder(root='datasets/valid', transform=transform)
 
 train_loader = DataLoader(dataset=train_dataset, batch_size=32, shuffle=True, num_workers=0, pin_memory=True)
 valid_loader = DataLoader(dataset=valid_dataset, batch_size=32, shuffle=True, num_workers=0, pin_memory=True)
 
-load_path = 'weights/pretrain.pt'
-best_path = 'weights/trained-best.pt'
-last_path = 'weights/trained-last.pt'
+load_path = 'weights/dev/pretrain.pt'
+best_path = 'weights/dev/best.pt'
+last_path = 'weights/dev/last.pt'
 
 if torch.cuda.is_available():
     device = torch.device('cuda')
