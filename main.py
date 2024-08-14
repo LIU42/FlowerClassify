@@ -1,17 +1,22 @@
 import flask
 import cv2
 import numpy as np
+import yaml
 
 from predict import FlowerClassifier
 
 
-app = flask.Flask(__name__)
-
-classifier = FlowerClassifier(device='CPU', precision='fp32')
+def load_classifier():
+    with open('config.yaml', 'r') as configs:
+        return FlowerClassifier(yaml.safe_load(configs))
 
 
 def read_stream(stream):
     return cv2.imdecode(np.frombuffer(stream.read(), dtype=np.uint8), cv2.IMREAD_UNCHANGED)
+
+
+app = flask.Flask(__name__)
+classifier = load_classifier()
 
 
 @app.errorhandler(400)

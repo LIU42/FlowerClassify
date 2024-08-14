@@ -1,3 +1,6 @@
+device: "CPU"
+precision: "fp32"
+
 classes: [
   "Bellflower",
   "Carnation",

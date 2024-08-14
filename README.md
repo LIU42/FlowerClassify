@@ -47,7 +47,7 @@ Web 服务接口描述如下：
 }
 ```
 
-若要使用自己的数据集训练模型，准备好数据集、调整好类别配置文件 classes.yaml 和模型输出格式后：
+若要使用自己的数据集训练模型，准备好数据集、调整好模型输出格式后：
 
 1. 运行 model.py 自动下载预训练模型权重并保存。
 
@@ -69,5 +69,3 @@ docker run --rm -p 9500:9500 --name flowerclassify flowerclassify:1.2.1
 ```
 
 *<u>以上仅为一个示例，详情请参考 [Docker](https://docs.docker.com/) 文档。</u>*
-
-
