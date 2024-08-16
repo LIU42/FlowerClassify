@@ -1,11 +1,11 @@
 import torch
 
+from torch.utils.data import DataLoader
 from torch import nn
 from torch import optim
-from torch.utils.data import DataLoader
 
-from torchvision import transforms
 from torchvision.datasets import ImageFolder
+from torchvision import transforms
 
 from model import ClassifyNet
 
@@ -15,11 +15,11 @@ transform = transforms.Compose([
     transforms.ToTensor(),
 ])
 
-train_dataset = ImageFolder(root='datasets/train', transform=transform)
-valid_dataset = ImageFolder(root='datasets/valid', transform=transform)
+train_dataset = ImageFolder('datasets/train', transform=transform)
+valid_dataset = ImageFolder('datasets/valid', transform=transform)
 
-train_loader = DataLoader(dataset=train_dataset, batch_size=32, shuffle=True, num_workers=0, pin_memory=True)
-valid_loader = DataLoader(dataset=valid_dataset, batch_size=32, shuffle=True, num_workers=0, pin_memory=True)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=0)
+valid_loader = DataLoader(valid_dataset, batch_size=32, shuffle=True, num_workers=0)
 
 load_path = 'weights/develop/pretrain.pt'
 best_path = 'weights/develop/best.pt'
@@ -35,7 +35,7 @@ best_accuracy = 0
 
 model = ClassifyNet()
 model.to(device)
-model.load_state_dict(torch.load(load_path, map_location=device))
+model.load_state_dict(torch.load(load_path, map_location=device, weights_only=True))
 
 criterion = nn.CrossEntropyLoss()
 criterion.to(device)

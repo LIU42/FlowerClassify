@@ -162,6 +162,6 @@ cython_debug/
 datasets/test/*
 datasets/train/*
 datasets/valid/*
-images/*
+tests/*
 weights/develop/*
 weights/product/*

@@ -5,7 +5,6 @@ from torchvision import models
 
 
 class ClassifyNet(nn.Module):
-
     def __init__(self, num_classes=10, pretrain=False):
         super().__init__()
 

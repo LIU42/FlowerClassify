@@ -5,7 +5,6 @@ from utils import ResultUtils
 
 
 class FlowerClassifier:
-
     def __init__(self, configs):
         if configs['device'] == 'GPU':
             providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
@@ -18,10 +17,10 @@ class FlowerClassifier:
     def __call__(self, image):
         inputs = ImageUtils.preprocess(image, size=224, padding_color=127, precision=self.precision)
 
-        outputs = self.session.run(None, {
-            'input': inputs,
-        })
-        class_index, confidences = ResultUtils.parse_outputs(outputs[0].squeeze())
+        outputs = self.session.run([], inputs)
+        outputs = self.postprocess(outputs)
+
+        class_index, confidences = ResultUtils.parse_outputs(outputs)
 
         return self.classes[class_index], f'{confidences[class_index]:.3f}'
     
@@ -32,3 +31,7 @@ class FlowerClassifier:
     @property
     def classes(self):
         return self.configs['classes']
+
+    @staticmethod
+    def postprocess(outputs):
+        return outputs[0].squeeze()
