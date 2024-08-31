@@ -1,6 +1,7 @@
 FROM debian:12-slim
 
 RUN mkdir /home/app
+RUN mkdir /home/app/utils
 RUN mkdir /home/app/weights
 RUN mkdir /home/app/weights/product
 
@@ -8,7 +9,9 @@ WORKDIR /home/app
 
 COPY ./main.py /home/app/main.py
 COPY ./predict.py /home/app/predict.py
-COPY ./utils.py /home/app/utils.py
+COPY ./utils/__init__.py /home/app/utils/__init__.py
+COPY ./utils/image.py /home/app/utils/image.py
+COPY ./utils/result.py /home/app/utils/result.py
 COPY ./config.yaml /home/app/config.yaml
 COPY ./weights/product/classify-fp32.onnx /home/app/weights/product/classify-fp32.onnx
 

@@ -1,7 +1,6 @@
 import torch
-
-from torch import nn
-from torchvision import models
+import torch.nn as nn
+import torchvision.models as models
 
 
 class ClassifyNet(nn.Module):

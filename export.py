@@ -8,14 +8,16 @@ if torch.cuda.is_available():
 else:
     device = torch.device('cpu')
 
-model = ClassifyNet()
-model.to(device)
+model = ClassifyNet().to(device)
+model.eval()
 model.load_state_dict(torch.load('weights/develop/best.pt', map_location=device, weights_only=True))
 
+dummy_input = torch.ones((1, 3, 224, 224), dtype=torch.float32, device=device)
+
 torch.onnx.export(
-    f='weights/product/classify-fp32.onnx',
     model=model,
-    args=torch.ones((1, 3, 224, 224), dtype=torch.float32).to(device),
+    f='weights/product/classify-fp32.onnx',
+    args=dummy_input,
     input_names=['input'],
     output_names=['output'],
 )

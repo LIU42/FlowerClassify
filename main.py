@@ -32,3 +32,4 @@ def flower_classify():
         flask.abort(400)
 
     return flask.jsonify({'name': name, 'confidence': confidence})
+ 

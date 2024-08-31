@@ -1,7 +1,7 @@
 import onnxruntime as ort
 
-from utils import ImageUtils
-from utils import ResultUtils
+import utils.image as imageutils
+import utils.result as resultutils
 
 
 class FlowerClassifier:
@@ -15,12 +15,12 @@ class FlowerClassifier:
         self.session = ort.InferenceSession(f'weights/product/classify-{self.precision}.onnx', providers=providers)
 
     def __call__(self, image):
-        inputs = ImageUtils.preprocess(image, size=224, padding_color=127, precision=self.precision)
+        inputs = imageutils.preprocess(image, size=224, padding_color=127, precision=self.precision)
 
         outputs = self.session.run([], inputs)
         outputs = self.postprocess(outputs)
 
-        class_index, confidences = ResultUtils.parse_outputs(outputs)
+        class_index, confidences = resultutils.parse_outputs(outputs)
 
         return self.classes[class_index], f'{confidences[class_index]:.3f}'
     
