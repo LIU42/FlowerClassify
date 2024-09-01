@@ -18,11 +18,27 @@
 
 ## 使用说明
 
-首先安装相关的依赖：
+### 安装环境依赖
 
-```shell
-pip install -r requirements.txt
+首先使用 pip 安装如下的依赖：
+
+```python
+# 推理部署环境依赖
+opencv-python~=4.10.0.84
+numpy~=1.23.4
+Flask~=3.0.3
+PyYAML~=6.0
+onnxruntime~=1.14.1
+
+# 训练环境依赖
+torch~=2.4.0
+torchvision~=0.19.0
+onnx~=1.16.2
 ```
+
+<u>*注：使用 pip 安装 opencv-python 可能会出现依赖不全的问题，推荐使用系统包管理器安装。*</u>
+
+### 启动 Web 服务
 
 将模型权重文件放入 weights/ 下对应的目录后，执行以下命令启动 Web 服务：
 
@@ -47,6 +63,8 @@ Web 服务接口描述如下：
 }
 ```
 
+### 模型训练与评估
+
 若要使用自己的数据集训练模型，准备好数据集、调整好模型输出格式后：
 
 1. 运行 model.py 自动下载预训练模型权重并保存。
@@ -55,7 +73,50 @@ Web 服务接口描述如下：
 
 3. 运行 eval.py 以评估当前最优模型在测试集上的准确率（可选）。
 
-4. 运行 export.py 将模型导出为 ONNX 格式用于部署。
+### 模型推理部署
+
+部署需要将训练好的模型转换为 ONNX 格式，可使用如下程序导出为单精度模型。
+
+```python
+model = ClassifyNet()
+model.eval()
+
+dummy_input = torch.ones((1, 3, 224, 224))
+dummy_input = dummy_input.float()
+
+model.load_state_dict(torch.load('weights/develop/best.pt', map_location=torch.device('cpu'), weights_only=True))
+
+torch.onnx.export(
+    f='weights/product/classify-fp32.onnx',
+    model=model,
+    args=dummy_input,
+    input_names=['input'],
+    output_names=['output'],
+)
+```
+
+导出为半精度模型需要具备 GPU 环境，类似地，可使用如下程序导出。
+
+```python
+model = ClassifyNet()
+model = model.cuda()
+model = model.half()
+model.eval()
+
+dummy_input = torch.ones((1, 3, 224, 224))
+dummy_input = dummy_input.cuda()
+dummy_input = dummy_input.half()
+
+model.load_state_dict(torch.load('weights/develop/best.pt', map_location=torch.device('cuda'), weights_only=True))
+
+torch.onnx.export(
+    f='weights/product/classify-fp16.onnx',
+    model=model,
+    args=dummy_input,
+    input_names=['input'],
+    output_names=['output'],
+)
+```
 
 若要使用 Docker 进行容器化部署：
 
@@ -68,4 +129,4 @@ docker build -t flowerclassify:1.2.1 -f docker/Dockerfile .
 docker run --rm -p 9500:9500 --name flowerclassify flowerclassify:1.2.1
 ```
 
-*<u>以上仅为一个示例，详情请参考 [Docker](https://docs.docker.com/) 文档。</u>*
+*<u>注：以上仅为一个示例，详情请参考 [Docker](https://docs.docker.com/) 文档。</u>*
