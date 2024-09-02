@@ -40,6 +40,17 @@ onnx~=1.16.2
 
 ### 启动 Web 服务
 
+本项目的默认配置文件为 <u>configs/config.yaml</u>，其中各个属性对应的含义如下：
+
+```yaml
+device: "CPU"        # 推理设备，CPU"" 或 "GPU""
+precision: "fp32"    # 推理运算精度，"fp32"（单精度）或 "fp16"（半精度）
+
+classes: [
+    # 花卉分类名称列表，包含所有花卉类别对应的标签（按顺序）
+]
+```
+
 将模型权重文件放入 weights/ 下对应的目录后，执行以下命令启动 Web 服务：
 
 ```shell
@@ -130,3 +141,5 @@ docker run --rm -p 9500:9500 --name flowerclassify flowerclassify:1.2.1
 ```
 
 *<u>注：以上仅为一个示例，详情请参考 [Docker](https://docs.docker.com/) 文档。</u>*
+
+

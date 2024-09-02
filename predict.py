@@ -1,7 +1,5 @@
 import onnxruntime as ort
-
-import utils.preprocess as preprocess
-import utils.postprocess as postprocess
+import utils.process as process
 
 
 class FlowerClassifier:
@@ -15,12 +13,12 @@ class FlowerClassifier:
         self.session = ort.InferenceSession(f'weights/product/classify-{self.precision}.onnx', providers=providers)
 
     def __call__(self, image):
-        inputs = preprocess.preprocess(image, size=224, padding_color=127, precision=self.precision)
+        inputs = process.preprocess(image, size=224, padding_color=127, precision=self.precision)
 
         outputs = self.session.run([], inputs)
-        outputs = self.postprocessing(outputs)
+        outputs = self.reshape(outputs)
 
-        class_index, confidences = postprocess.parse_outputs(outputs)
+        class_index, confidences = process.parse_outputs(outputs)
 
         return self.classes[class_index], f'{confidences[class_index]:.3f}'
     
@@ -33,5 +31,5 @@ class FlowerClassifier:
         return self.configs['classes']
 
     @staticmethod
-    def postprocessing(outputs):
+    def reshape(outputs):
         return outputs[0].squeeze()

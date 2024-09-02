@@ -7,7 +7,7 @@ from predict import FlowerClassifier
 
 
 def load_classifier():
-    with open('config.yaml', 'r') as configs:
+    with open('configs/config.yaml', 'r') as configs:
         return FlowerClassifier(yaml.safe_load(configs))
 
 

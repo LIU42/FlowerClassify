@@ -30,3 +30,9 @@ def convert_inputs(image, precision):
 
 def preprocess(image, size, padding_color, precision):
     return convert_inputs(letterbox(image, size, padding_color), precision)
+
+
+def parse_outputs(outputs):
+    probability_outputs = np.exp(outputs) / np.sum(np.exp(outputs), axis=0)
+
+    return np.argmax(probability_outputs), probability_outputs
