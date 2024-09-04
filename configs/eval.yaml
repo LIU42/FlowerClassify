@@ -1,0 +1,6 @@
+device: "cpu"
+model-path: "weights/develop/best.pt"
+
+batch-size: 32
+num-classes: 10
+num-workers: 0

@@ -1,0 +1,7 @@
+num-classes: 10
+
+device: "cpu"
+precision: "fp32"
+
+source-path: "weights/develop/best.pt"
+output-path: "weights/product/classify-fp32.onnx"

@@ -1,4 +1,6 @@
 import torch
+import yaml
+
 import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data as data
@@ -9,6 +11,16 @@ import torchvision.transforms as transforms
 from model import ClassifyNet
 
 
+def load_configs():
+    with open('configs/train.yaml', 'r') as configs:
+        return yaml.safe_load(configs)
+
+
+configs = load_configs()
+
+num_classes = configs['num-classes']
+num_workers = configs['num-workers']
+
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -17,30 +29,30 @@ transform = transforms.Compose([
 train_dataset = datasets.ImageFolder('datasets/train', transform=transform)
 valid_dataset = datasets.ImageFolder('datasets/valid', transform=transform)
 
-train_loader = data.DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=0)
-valid_loader = data.DataLoader(valid_dataset, batch_size=32, shuffle=True, num_workers=0)
+batch_size = configs['batch-size']
 
-load_path = 'weights/develop/pretrain.pt'
-best_path = 'weights/develop/best.pt'
-last_path = 'weights/develop/last.pt'
+train_loader = data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+valid_loader = data.DataLoader(valid_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
 
-if torch.cuda.is_available():
-    device = torch.device('cuda')
-else:
-    device = torch.device('cpu')
+device = torch.device(configs['device'])
 
-model = ClassifyNet().to(device)
+model = ClassifyNet(num_classes=num_classes, pretrain=False)
+model = model.to(device)
+
+load_path = configs['load-path']
+best_path = configs['best-path']
+last_path = configs['last-path']
+
 model.load_state_dict(torch.load(load_path, map_location=device, weights_only=True))
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.AdamW(model.parameters(), lr=0.0002)
+optimizer = optim.AdamW(model.parameters(), lr=configs['learning-rate'])
 
-epochs = 50
 best_accuracy = 0
 
 print(f'\n---------- Training Start At: {str(device).upper()} ----------\n')
 
-for epoch in range(epochs):
+for epoch in range(configs['epochs']):
     train_loss = 0
     model.train()
 

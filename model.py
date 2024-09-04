@@ -1,10 +1,9 @@
-import torch
 import torch.nn as nn
 import torchvision.models as models
 
 
 class ClassifyNet(nn.Module):
-    def __init__(self, num_classes=10, pretrain=False):
+    def __init__(self, num_classes, pretrain):
         super().__init__()
 
         if pretrain:
@@ -16,7 +15,3 @@ class ClassifyNet(nn.Module):
 
     def forward(self, inputs):
         return self.backbone(inputs)
-
-
-if __name__ == '__main__':
-    torch.save(ClassifyNet(pretrain=True).state_dict(), 'weights/develop/pretrain.pt')

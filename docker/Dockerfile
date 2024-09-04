@@ -8,12 +8,11 @@ RUN mkdir /home/app/weights/product
 
 WORKDIR /home/app
 
-COPY ./main.py /home/app/main.py
+COPY ./server.py /home/app/server.py
 COPY ./predict.py /home/app/predict.py
 COPY ./utils/__init__.py /home/app/utils/__init__.py
-COPY ./utils/image.py /home/app/utils/image.py
-COPY ./utils/result.py /home/app/utils/result.py
-COPY ./configs/config.yaml /home/app/configs/config.yaml
+COPY ./utils/process.py /home/app/utils/process.py
+COPY ./configs/server.yaml /home/app/configs/server.yaml
 COPY ./weights/product/classify-fp32.onnx /home/app/weights/product/classify-fp32.onnx
 
 RUN sed -i 's|deb.debian.org|mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list.d/debian.sources
@@ -31,4 +30,4 @@ RUN apt-get autoclean -y
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-CMD ["flask", "--app", "main", "run", "--host=0.0.0.0", "--port=9500"]
+CMD ["flask", "--app", "server", "run", "--host=0.0.0.0", "--port=9500"]
