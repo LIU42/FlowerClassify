@@ -18,9 +18,6 @@ def load_configs():
 
 configs = load_configs()
 
-num_classes = configs['num-classes']
-num_workers = configs['num-workers']
-
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -29,21 +26,14 @@ transform = transforms.Compose([
 train_dataset = datasets.ImageFolder('datasets/train', transform=transform)
 valid_dataset = datasets.ImageFolder('datasets/valid', transform=transform)
 
-batch_size = configs['batch-size']
-
-train_loader = data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
-valid_loader = data.DataLoader(valid_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+train_loader = data.DataLoader(train_dataset, configs['batch-size'], shuffle=True, num_workers=configs['num-workers'])
+valid_loader = data.DataLoader(valid_dataset, configs['batch-size'], shuffle=True, num_workers=configs['num-workers'])
 
 device = torch.device(configs['device'])
 
-model = ClassifyNet(num_classes=num_classes, pretrain=False)
+model = ClassifyNet(num_classes=configs['num-classes'], pretrain=False)
 model = model.to(device)
-
-load_path = configs['load-path']
-best_path = configs['best-path']
-last_path = configs['last-path']
-
-model.load_state_dict(torch.load(load_path, map_location=device, weights_only=True))
+model.load_state_dict(torch.load(configs['load-path'], map_location=device, weights_only=True))
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.AdamW(model.parameters(), lr=configs['learning-rate'])
@@ -77,7 +67,6 @@ for epoch in range(configs['epochs']):
         for inputs, labels in valid_loader:
             inputs = inputs.to(device)
             labels = labels.to(device)
-
             outputs = model(inputs)
             valid_accuracy += (torch.argmax(outputs, dim=1) == labels).sum().item()
 
@@ -85,9 +74,9 @@ for epoch in range(configs['epochs']):
 
     if valid_accuracy > best_accuracy:
         best_accuracy = valid_accuracy
-        torch.save(model.state_dict(), best_path)
+        torch.save(model.state_dict(), configs['best-path'])
 
-    torch.save(model.state_dict(), last_path)
+    torch.save(model.state_dict(), configs['last-path'])
 
     print(f'\tEpoch: {epoch:<6} Loss: {train_loss:<8.3f} Accuracy: {valid_accuracy:.3f}')
 

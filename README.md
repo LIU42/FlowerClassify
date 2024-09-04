@@ -43,7 +43,7 @@ onnx~=1.16.2
 本项目 Web 服务的默认配置文件为 <u>configs/server.yaml</u>，其中各个属性对应的含义如下：
 
 ```yaml
-device: "CPU"        # 推理设备，CPU"" 或 "GPU""
+device: "CPU"        # 推理设备，"CPU" 或 "CUDA"
 precision: "fp32"    # 推理运算精度，"fp32"（单精度）或 "fp16"（半精度）
 
 classes: [
@@ -51,7 +51,7 @@ classes: [
 ]
 ```
 
-将模型权重文件放入 weights/ 下对应的目录后，执行以下命令启动 Web 服务：
+将模型权重文件放入 <u>weights/deploy/</u> 目录后，执行以下命令启动 Web 服务：
 
 ```bash
 flask --app server run --host="0.0.0.0" --port=9500
@@ -124,8 +124,8 @@ num-classes: 10    # 模型分类类别数
 device: "cpu"        # 设备名称，与 PyTroch 的设备名称保持一致，若导出为半精度需要设置为 GPU 相关
 precision: "fp32"    # 导出模型精度，"fp32"（单精度）或 "fp16"（半精度）
 
-source-path: "weights/develop/best.pt"                # 待导出的 PyTorch 格式模型路径
-output-path: "weights/product/classify-fp32.onnx"    # 导出的 ONNX 格式模型保存路径
+source-path: "weights/develop/best.pt"              # 待导出的 PyTorch 格式模型路径
+output-path: "weights/deploy/classify-fp32.onnx"    # 导出的 ONNX 格式模型保存路径
 ```
 
 若要使用 Docker 进行容器化部署：

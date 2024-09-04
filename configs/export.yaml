@@ -4,4 +4,4 @@ device: "cpu"
 precision: "fp32"
 
 source-path: "weights/develop/best.pt"
-output-path: "weights/product/classify-fp32.onnx"
+output-path: "weights/deploy/classify-fp32.onnx"

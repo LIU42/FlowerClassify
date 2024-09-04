@@ -23,7 +23,7 @@ transform = transforms.Compose([
 dataset = datasets.ImageFolder('datasets/test', transform=transform)
 dataset_size = len(dataset)
 
-dataloader = data.DataLoader(dataset, batch_size=configs['batch-size'], num_workers=configs['num-workers'])
+dataloader = data.DataLoader(dataset, configs['batch-size'], num_workers=configs['num-workers'])
 dataloader_size = len(dataloader)
 
 device = torch.device(configs['device'])
@@ -31,7 +31,6 @@ accuracy = 0
 
 model = ClassifyNet(num_classes=configs['num-classes'], pretrain=False)
 model = model.to(device)
-
 model.load_state_dict(torch.load(configs['model-path'], map_location=device, weights_only=True))
 
 print(f'\n---------- Evaluation Start At: {str(device).upper()} ----------\n')
@@ -42,7 +41,6 @@ with torch.no_grad():
     for step, (inputs, labels) in enumerate(dataloader, start=1):
         inputs = inputs.to(device)
         labels = labels.to(device)
-
         outputs = model(inputs)
         accuracy += (torch.argmax(outputs, dim=1) == labels).sum().item()
 

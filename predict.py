@@ -4,18 +4,18 @@ import utils.process as process
 
 class FlowerClassifier:
     def __init__(self, configs):
-        if configs['device'] == 'GPU':
-            providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
+        if configs['device'] == 'CUDA':
+            providers = ['CUDAExecutionProvider']
         else:
             providers = ['CPUExecutionProvider']
 
         self.configs = configs
-        self.session = ort.InferenceSession(f'weights/product/classify-{self.precision}.onnx', providers=providers)
+        self.session = ort.InferenceSession(f'weights/deploy/classify-{self.precision}.onnx', providers=providers)
 
     def __call__(self, image):
         inputs = process.preprocess(image, size=224, padding_color=127, precision=self.precision)
 
-        outputs = self.session.run([], inputs)
+        outputs = self.session.run(None, inputs)
         outputs = self.reshape(outputs)
 
         class_index, confidences = process.parse_outputs(outputs)
