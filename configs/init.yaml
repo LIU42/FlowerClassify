@@ -1,0 +1,3 @@
+num-classes: 10
+pretrain: true
+save-path: "checkpoints/pretrain.pt"

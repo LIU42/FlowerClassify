@@ -10,7 +10,7 @@ class FlowerClassifier:
             providers = ['CPUExecutionProvider']
 
         self.configs = configs
-        self.session = ort.InferenceSession(f'weights/deploy/classify-{self.precision}.onnx', providers=providers)
+        self.session = ort.InferenceSession(f'weights/classify-{self.precision}.onnx', providers=providers)
 
     def __call__(self, image):
         inputs = process.preprocess(image, size=224, padding_color=127, precision=self.precision)

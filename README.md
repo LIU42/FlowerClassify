@@ -51,7 +51,7 @@ classes: [
 ]
 ```
 
-将模型权重文件放入 <u>weights/deploy/</u> 目录后，执行以下命令启动 Web 服务：
+将模型权重文件放入 <u>weights/</u> 目录后，执行以下命令启动 Web 服务：
 
 ```bash
 flask --app server run --host="0.0.0.0" --port=9500
@@ -78,12 +78,12 @@ Web 服务接口描述如下：
 
 若要使用自己的数据集训练模型，准备好数据集、调整好模型输出格式后：
 
-1. 运行 prepare.py 自动下载预训练模型权重并保存，默认的配置文件为 <u>configs/model.yaml</u>，其中各个属性对应的含义如下：
+1. 运行 init.py 自动下载预训练模型权重并保存，默认的配置文件为 <u>configs/init.yaml</u>，其中各个属性对应的含义如下：
    
    ```yaml
    num-classes: 10    # 模型分类类别数
    pretrain: true     # 是否加载预训练权重
-   save-path: "weights/develop/pretrain.pt"    # 模型保存路径
+   save-path: "checkpoints/pretrain.pt"    # 模型保存路径
    ```
 
 2. 根据需要调整 <u>configs/train.yaml</u> 中的各项参数，运行 train.py 即可开始训练，配置属性对应的含义如下：
@@ -98,16 +98,16 @@ Web 服务接口描述如下：
    learning-rate: 0.0002    # 学习率
    batch-size: 32           # 批大小
    
-   load-path: "weights/develop/pretrain.pt"    # 待训练模型路径
-   best-path: "weights/develop/best.pt"        # 当前验证集上最优模型保存路径
-   last-path: "weights/develop/last.pt"        # 最后一次迭代模型保存路径
+   load-path: "checkpoints/pretrain.pt"    # 待训练模型路径
+   best-path: "checkpoints/best.pt"        # 当前验证集上最优模型保存路径
+   last-path: "checkpoints/last.pt"        # 最后一次迭代模型保存路径
    ```
 
 3. 运行 eval.py 以评估当前最优模型在测试集上的准确率（可选），默认的配置文件为 <u>configs/eval.yaml</u>，其中各个属性对应的含义如下：
    
    ```yaml
    device: "cpu"                            # 设备名称，与 PyTroch 的设备名称保持一致
-   model-path: "weights/develop/best.pt"    # 待评估模型路径
+   model-path: "checkpoints/best.pt"    # 待评估模型路径
    
    batch-size: 32    # 批大小
    num-classes: 10   # 模型分类类别数
@@ -124,8 +124,8 @@ num-classes: 10    # 模型分类类别数
 device: "cpu"        # 设备名称，与 PyTroch 的设备名称保持一致，若导出为半精度需要设置为 GPU 相关
 precision: "fp32"    # 导出模型精度，"fp32"（单精度）或 "fp16"（半精度）
 
-source-path: "weights/develop/best.pt"              # 待导出的 PyTorch 格式模型路径
-output-path: "weights/deploy/classify-fp32.onnx"    # 导出的 ONNX 格式模型保存路径
+source-path: "checkpoints/best.pt"              # 待导出的 PyTorch 格式模型路径
+output-path: "weights/classify-fp32.onnx"    # 导出的 ONNX 格式模型保存路径
 ```
 
 若要使用 Docker 进行容器化部署：

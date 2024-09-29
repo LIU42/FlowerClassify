@@ -4,7 +4,6 @@ RUN mkdir /home/app
 RUN mkdir /home/app/configs
 RUN mkdir /home/app/utils
 RUN mkdir /home/app/weights
-RUN mkdir /home/app/weights/deploy
 
 WORKDIR /home/app
 
@@ -13,7 +12,7 @@ COPY ./predict.py /home/app/predict.py
 COPY ./utils/__init__.py /home/app/utils/__init__.py
 COPY ./utils/process.py /home/app/utils/process.py
 COPY ./configs/server.yaml /home/app/configs/server.yaml
-COPY ./weights/deploy/classify-fp32.onnx /home/app/weights/deploy/classify-fp32.onnx
+COPY ./weights/classify-fp32.onnx /home/app/weightsclassify-fp32.onnx
 
 RUN sed -i 's|deb.debian.org|mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list.d/debian.sources
 

@@ -1,3 +1,0 @@
-num-classes: 10
-pretrain: true
-save-path: "weights/develop/pretrain.pt"

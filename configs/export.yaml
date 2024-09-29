@@ -3,5 +3,5 @@ num-classes: 10
 device: "cpu"
 precision: "fp32"
 
-source-path: "weights/develop/best.pt"
-output-path: "weights/deploy/classify-fp32.onnx"
+source-path: "checkpoints/best.pt"
+output-path: "weights/classify-fp32.onnx"

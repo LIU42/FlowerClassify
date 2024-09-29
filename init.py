@@ -5,7 +5,7 @@ from model import ClassifyNet
 
 
 def load_configs():
-    with open('configs/model.yaml', 'r') as configs:
+    with open('configs/init.yaml', 'r') as configs:
         return yaml.safe_load(configs)
 
 

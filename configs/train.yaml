@@ -7,6 +7,6 @@ epochs: 50
 learning-rate: 0.0002
 batch-size: 32
 
-load-path: "weights/develop/pretrain.pt"
-best-path: "weights/develop/best.pt"
-last-path: "weights/develop/last.pt"
+load-path: "checkpoints/pretrain.pt"
+best-path: "checkpoints/best.pt"
+last-path: "checkpoints/last.pt"
