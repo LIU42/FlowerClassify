@@ -106,7 +106,7 @@ Web 服务接口描述如下：
 3. 运行 eval.py 以评估当前最优模型在测试集上的准确率（可选），默认的配置文件为 <u>configs/eval.yaml</u>，其中各个属性对应的含义如下：
    
    ```yaml
-   device: "cpu"                            # 设备名称，与 PyTroch 的设备名称保持一致
+   device: "cpu"                        # 设备名称，与 PyTroch 的设备名称保持一致
    model-path: "checkpoints/best.pt"    # 待评估模型路径
    
    batch-size: 32    # 批大小
@@ -125,7 +125,7 @@ device: "cpu"        # 设备名称，与 PyTroch 的设备名称保持一致，
 precision: "fp32"    # 导出模型精度，"fp32"（单精度）或 "fp16"（半精度）
 
 source-path: "checkpoints/best.pt"              # 待导出的 PyTorch 格式模型路径
-output-path: "weights/classify-fp32.onnx"    # 导出的 ONNX 格式模型保存路径
+output-path: "weights/classify-fp32.onnx"       # 导出的 ONNX 格式模型保存路径
 ```
 
 若要使用 Docker 进行容器化部署：
