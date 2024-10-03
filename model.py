@@ -3,10 +3,10 @@ import torchvision.models as models
 
 
 class ClassifyNet(nn.Module):
-    def __init__(self, num_classes, pretrain):
+    def __init__(self, num_classes, pretrained):
         super().__init__()
 
-        if pretrain:
+        if pretrained:
             self.backbone = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
         else:
             self.backbone = models.resnet18()

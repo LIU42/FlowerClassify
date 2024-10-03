@@ -1,7 +1,5 @@
-num-classes: 10
-
 device: "cpu"
 precision: "fp32"
-
+num-classes: 10
 source-path: "checkpoints/best.pt"
 output-path: "weights/classify-fp32.onnx"

@@ -4,15 +4,12 @@ import yaml
 from model import ClassifyNet
 
 
-def load_configs():
-    with open('configs/export.yaml', 'r') as configs:
-        return yaml.safe_load(configs)
+with open('configs/export.yaml', 'r') as configs:
+    configs = yaml.safe_load(configs)
 
-
-configs = load_configs()
 device = torch.device(configs['device'])
 
-model = ClassifyNet(num_classes=configs['num-classes'], pretrain=False)
+model = ClassifyNet(num_classes=configs['num-classes'], pretrained=False)
 model = model.to(device)
 
 input = torch.ones(1, 3, 224, 224)

@@ -1,12 +1,13 @@
 device: "cpu"
-
-num-classes: 10
-num-workers: 0
-
 epochs: 50
 learning-rate: 0.0002
 batch-size: 32
+num-workers: 0
+num-classes: 10
 
-load-path: "checkpoints/pretrain.pt"
+load-checkpoint: false
+load-pretrained: false
+
+load-path: "checkpoints/last.pt"
 best-path: "checkpoints/best.pt"
 last-path: "checkpoints/last.pt"

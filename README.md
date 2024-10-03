@@ -78,40 +78,32 @@ Web 服务接口描述如下：
 
 若要使用自己的数据集训练模型，准备好数据集、调整好模型输出格式后：
 
-1. 运行 init.py 自动下载预训练模型权重并保存，默认的配置文件为 <u>configs/init.yaml</u>，其中各个属性对应的含义如下：
+1. 根据需要调整 <u>configs/train.yaml</u> 中的各项参数，运行 train.py 即可开始训练，配置属性对应的含义如下：
    
    ```yaml
-   num-classes: 10    # 模型分类类别数
-   pretrain: true     # 是否加载预训练权重
-   save-path: "checkpoints/pretrain.pt"    # 模型保存路径
-   ```
-
-2. 根据需要调整 <u>configs/train.yaml</u> 中的各项参数，运行 train.py 即可开始训练，配置属性对应的含义如下：
-   
-   ```yaml
-   device: "cpu"        # 设备名称，与 PyTroch 的设备名称保持一致
-   
-   num-classes: 10      # 模型分类类别数
-   num-workers: 0       # DataLoader 加载子进程数
-   
+   device: "cpu"            # 设备名称，与 PyTroch 的设备名称保持一致
    epochs: 50               # 训练迭代次数
    learning-rate: 0.0002    # 学习率
    batch-size: 32           # 批大小
+   num-workers: 0           # DataLoader 加载子进程数
+   num-classes: 10          # 模型分类类别数
    
-   load-path: "checkpoints/pretrain.pt"    # 待训练模型路径
+   load-checkpoint: false         # 是否加载 checkpoint 继续训练，若为 true 则从 load-path 加载模型权重，反之则使用初始化模型权重开始训练
+   load-pretrained: true          # 是否使用预训练参数初始化模型权重
+   
+   load-path: "checkpoints/last.pt"        # 待训练模型路径
    best-path: "checkpoints/best.pt"        # 当前验证集上最优模型保存路径
    last-path: "checkpoints/last.pt"        # 最后一次迭代模型保存路径
    ```
 
-3. 运行 eval.py 以评估当前最优模型在测试集上的准确率（可选），默认的配置文件为 <u>configs/eval.yaml</u>，其中各个属性对应的含义如下：
+2. 运行 eval.py 以评估当前最优模型在测试集上的准确率（可选），默认的配置文件为 <u>configs/eval.yaml</u>，其中各个属性对应的含义如下：
    
    ```yaml
-   device: "cpu"                        # 设备名称，与 PyTroch 的设备名称保持一致
-   model-path: "checkpoints/best.pt"    # 待评估模型路径
-   
-   batch-size: 32    # 批大小
-   num-classes: 10   # 模型分类类别数
-   num-workers: 0    # DataLoader 加载子进程数
+   device: "cpu"                         # 设备名称，与 PyTroch 的设备名称保持一致
+   batch-size: 32                        # 批大小
+   num-classes: 10                       # 模型分类类别数
+   num-workers: 0                        # DataLoader 加载子进程数
+   model-path: "checkpoints/best.pt"     # 待评估模型路径
    ```
 
 ### 模型推理部署
@@ -119,11 +111,9 @@ Web 服务接口描述如下：
 部署需要将训练好的模型转换为 ONNX 格式，运行 export.py 即可将模型导出为 ONNX 格式，默认的配置文件为 <u>configs/export.yaml</u>，其中各个属性对应的含义如下：
 
 ```yaml
-num-classes: 10    # 模型分类类别数
-
-device: "cpu"        # 设备名称，与 PyTroch 的设备名称保持一致，若导出为半精度需要设置为 GPU 相关
-precision: "fp32"    # 导出模型精度，"fp32"（单精度）或 "fp16"（半精度）
-
+device: "cpu"                                   # 设备名称，与 PyTroch 的设备名称保持一致，若导出为半精度需要设置为 GPU 相关
+precision: "fp32"                               # 导出模型精度，"fp32"（单精度）或 "fp16"（半精度）
+num-classes: 10                                 # 模型分类类别数
 source-path: "checkpoints/best.pt"              # 待导出的 PyTorch 格式模型路径
 output-path: "weights/classify-fp32.onnx"       # 导出的 ONNX 格式模型保存路径
 ```
@@ -140,3 +130,5 @@ docker run --rm -p 9500:9500 --name flowerclassify flowerclassify:1.2.1
 ```
 
 *<u>注：以上仅为一个示例，详情请参考 [Docker](https://docs.docker.com/) 文档。</u>*
+
+

@@ -1,6 +1,5 @@
 device: "cpu"
-model-path: "checkpoints/best.pt"
-
-batch-size: 32
+batch-size: 16
 num-classes: 10
 num-workers: 0
+model-path: "checkpoints/best.pt"

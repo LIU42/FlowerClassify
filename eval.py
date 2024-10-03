@@ -8,12 +8,8 @@ import torchvision.transforms as transforms
 from model import ClassifyNet
 
 
-def load_configs():
-    with open('configs/eval.yaml', 'r') as configs:
-        return yaml.safe_load(configs)
-
-
-configs = load_configs()
+with open('configs/eval.yaml', 'r') as configs:
+    configs = yaml.safe_load(configs)
 
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -27,24 +23,24 @@ dataloader = data.DataLoader(dataset, configs['batch-size'], num_workers=configs
 dataloader_size = len(dataloader)
 
 device = torch.device(configs['device'])
-accuracy = 0
+accuracy = 0.0
 
-model = ClassifyNet(num_classes=configs['num-classes'], pretrain=False)
+model = ClassifyNet(num_classes=configs['num-classes'], pretrained=False)
 model = model.to(device)
-model.load_state_dict(torch.load(configs['model-path'], map_location=device, weights_only=True))
 
 print(f'\n---------- Evaluation Start At: {str(device).upper()} ----------\n')
 
 with torch.no_grad():
+    model.load_state_dict(torch.load(configs['model-path'], map_location=device, weights_only=True))
     model.eval()
 
-    for step, (inputs, labels) in enumerate(dataloader, start=1):
+    for index, (inputs, labels) in enumerate(dataloader, start=1):
         inputs = inputs.to(device)
         labels = labels.to(device)
         outputs = model(inputs)
         accuracy += (torch.argmax(outputs, dim=1) == labels).sum().item()
 
-        print(f'\rProgress: [{step}/{dataloader_size}]', end='')
+        print(f'\rProgress: [{index}/{dataloader_size}]', end='')
 
 accuracy /= dataset_size
 

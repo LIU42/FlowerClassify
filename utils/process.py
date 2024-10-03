@@ -23,9 +23,9 @@ def convert_inputs(image, precision):
     inputs = np.expand_dims(inputs, axis=0)
 
     if precision == 'fp16':
-        return {'input': inputs.astype(np.float16)}
+        return inputs.astype(np.float16)
     else:
-        return {'input': inputs.astype(np.float32)}
+        return inputs.astype(np.float32)
 
 
 def preprocess(image, size, padding_color, precision):

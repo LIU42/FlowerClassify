@@ -11,12 +11,8 @@ import torchvision.transforms as transforms
 from model import ClassifyNet
 
 
-def load_configs():
-    with open('configs/train.yaml', 'r') as configs:
-        return yaml.safe_load(configs)
-
-
-configs = load_configs()
+with open('configs/train.yaml', 'r') as configs:
+    configs = yaml.safe_load(configs)
 
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -29,22 +25,28 @@ valid_dataset = datasets.ImageFolder('datasets/valid', transform=transform)
 train_loader = data.DataLoader(train_dataset, configs['batch-size'], shuffle=True, num_workers=configs['num-workers'])
 valid_loader = data.DataLoader(valid_dataset, configs['batch-size'], shuffle=True, num_workers=configs['num-workers'])
 
+load_path = configs['load-path']
+best_path = configs['best-path']
+last_path = configs['last-path']
+
 device = torch.device(configs['device'])
 
-model = ClassifyNet(num_classes=configs['num-classes'], pretrain=False)
+model = ClassifyNet(num_classes=configs['num-classes'], pretrained=configs['load-pretrained'])
 model = model.to(device)
-model.load_state_dict(torch.load(configs['load-path'], map_location=device, weights_only=True))
+
+if configs['load-checkpoint']:
+    model.load_state_dict(torch.load(load_path, map_location=device, weights_only=True))
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.AdamW(model.parameters(), lr=configs['learning-rate'])
 
-best_accuracy = 0
+max_accuracy = 0.0
 
 print(f'\n---------- Training Start At: {str(device).upper()} ----------\n')
 
 for epoch in range(configs['epochs']):
-    train_loss = 0
     model.train()
+    training_loss = 0
 
     for index, (inputs, labels) in enumerate(train_loader, start=1):
         inputs = inputs.to(device)
@@ -54,31 +56,31 @@ for epoch in range(configs['epochs']):
         loss = criterion(model(inputs), labels)
         loss.backward()
         optimizer.step()
-        train_loss += loss.item()
+        training_loss += loss.item()
 
         print(f'\rBatch Loss: {loss:.3f} [{index}/{len(train_loader)}]', end='')
 
-    train_loss /= len(train_loader)
-
     model.eval()
-    valid_accuracy = 0
+    training_loss /= len(train_loader)
 
     with torch.no_grad():
+        valid_accuracy = 0
+
         for inputs, labels in valid_loader:
             inputs = inputs.to(device)
             labels = labels.to(device)
             outputs = model(inputs)
             valid_accuracy += (torch.argmax(outputs, dim=1) == labels).sum().item()
 
-    valid_accuracy /= len(valid_dataset)
+        valid_accuracy /= len(valid_dataset)
 
-    if valid_accuracy > best_accuracy:
-        best_accuracy = valid_accuracy
-        torch.save(model.state_dict(), configs['best-path'])
+    if valid_accuracy > max_accuracy:
+        max_accuracy = valid_accuracy
+        torch.save(model.state_dict(), best_path)
 
-    torch.save(model.state_dict(), configs['last-path'])
+    torch.save(model.state_dict(), last_path)
 
-    print(f'\tEpoch: {epoch:<6} Loss: {train_loss:<8.3f} Accuracy: {valid_accuracy:.3f}')
+    print(f'\tEpoch: {epoch:<6} Loss: {training_loss:<10.5f} Accuracy: {valid_accuracy:.3f}')
 
 print('\n---------- Training Finish ----------\n')
-print(f'Best Accuracy: {best_accuracy:.3f}')
+print(f'Max Accuracy: {max_accuracy:.3f}')
