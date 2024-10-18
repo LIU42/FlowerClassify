@@ -7,7 +7,7 @@ import numpy as np
 
 app = flask.Flask(__name__)
 
-with open('configs/inference.yaml', 'r') as configs:
+with open('configs/server.yaml', 'r') as configs:
     configs = yaml.load(configs, Loader=yaml.FullLoader)
 
     precision = configs['precision']
