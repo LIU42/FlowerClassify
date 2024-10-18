@@ -43,18 +43,20 @@ onnx~=1.16.2
 本项目 Web 服务的默认配置文件为 <u>configs/server.yaml</u>，其中各个属性对应的含义如下：
 
 ```yaml
-device: "CPU"        # 推理设备，"CPU" 或 "CUDA"
-precision: "fp32"    # 推理运算精度，"fp32"（单精度）或 "fp16"（半精度）
+precision: "fp32"            # 推理运算精度，"fp32"（单精度）或 "fp16"（半精度）
+providers:                   # ONNX Runtime Providers 参数
+  - "CPUExecutionProvider"
 
-classes: [
-    # 花卉分类名称列表，包含所有花卉类别对应的标签（按顺序）
-]
+classes:                     # 花卉分类名称列表，包含所有花卉类别对应的标签（按顺序）
+  - "Bellflower"
+  - "Carnation"
+  ...
 ```
 
 将模型权重文件放入 <u>weights/</u> 目录后，执行以下命令启动 Web 服务：
 
 ```bash
-flask --app server run --host="0.0.0.0" --port=9500
+flask --app inference.server run --host="0.0.0.0" --port=9500
 ```
 
 Web 服务接口描述如下：
@@ -100,10 +102,10 @@ Web 服务接口描述如下：
    
    ```yaml
    device: "cpu"                         # 设备名称，与 PyTroch 的设备名称保持一致
+   model-path: "checkpoints/best.pt"     # 待评估模型路径
    batch-size: 32                        # 批大小
    num-classes: 10                       # 模型分类类别数
    num-workers: 0                        # DataLoader 加载子进程数
-   model-path: "checkpoints/best.pt"     # 待评估模型路径
    ```
 
 ### 模型推理部署
@@ -111,11 +113,11 @@ Web 服务接口描述如下：
 部署需要将训练好的模型转换为 ONNX 格式，运行 export.py 即可将模型导出为 ONNX 格式，默认的配置文件为 <u>configs/export.yaml</u>，其中各个属性对应的含义如下：
 
 ```yaml
-device: "cpu"                                   # 设备名称，与 PyTroch 的设备名称保持一致，若导出为半精度需要设置为 GPU 相关
-precision: "fp32"                               # 导出模型精度，"fp32"（单精度）或 "fp16"（半精度）
-num-classes: 10                                 # 模型分类类别数
 source-path: "checkpoints/best.pt"              # 待导出的 PyTorch 格式模型路径
-output-path: "weights/classify-fp32.onnx"       # 导出的 ONNX 格式模型保存路径
+num-classes: 10                                 # 模型分类类别数
+
+export-path-fp32: "inference/models/flower-fp32.onnx"    # fp32 精度模型导出路径
+export-path-fp16: "inference/models/flower-fp16.onnx"    # fp16 精度模型导出路径
 ```
 
 若要使用 Docker 进行容器化部署：
@@ -123,10 +125,10 @@ output-path: "weights/classify-fp32.onnx"       # 导出的 ONNX 格式模型保
 ```bash
 # 构建镜像
 cd FlowerClassify
-docker build -t flowerclassify:1.2.1 -f docker/Dockerfile .
+docker build -t flowerclassify:1.3.0 -f docker/Dockerfile .
 
 # 创建容器并运行
-docker run --rm -p 9500:9500 --name flowerclassify flowerclassify:1.2.1
+docker run --rm -p 9500:9500 --name flowerclassify flowerclassify:1.3.0
 ```
 
 *<u>注：以上仅为一个示例，详情请参考 [Docker](https://docs.docker.com/) 文档。</u>*
