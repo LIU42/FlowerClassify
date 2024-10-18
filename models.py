@@ -2,8 +2,8 @@ import torch.nn as nn
 import torchvision.models as models
 
 
-class ClassifyNet(nn.Module):
-    def __init__(self, num_classes, pretrained):
+class ResNet(nn.Module):
+    def __init__(self, num_classes=10, pretrained=False):
         super().__init__()
 
         if pretrained:

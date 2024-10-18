@@ -1,5 +1,5 @@
-device: "cpu"
-precision: "fp32"
-num-classes: 10
 source-path: "checkpoints/best.pt"
-output-path: "weights/classify-fp32.onnx"
+num-classes: 10
+
+export-path-fp32: "inference/models/flower-fp32.onnx"
+export-path-fp16: "inference/models/flower-fp16.onnx"

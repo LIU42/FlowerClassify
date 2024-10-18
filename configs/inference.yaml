@@ -1,0 +1,15 @@
+precision: "fp32"
+providers:
+  - "CPUExecutionProvider"
+
+flower-names:
+  - "Bellflower"
+  - "Carnation"
+  - "Daisy"
+  - "Dandelion"
+  - "Lavender"
+  - "Lily"
+  - "Lotus"
+  - "Rose"
+  - "Sunflower"
+  - "Tulip"

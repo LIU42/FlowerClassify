@@ -1,28 +1,35 @@
 import torch
 import yaml
 
-from model import ClassifyNet
+from models import ResNet
 
 
 with open('configs/export.yaml', 'r') as configs:
-    configs = yaml.safe_load(configs)
+    configs = yaml.load(configs, Loader=yaml.FullLoader)
 
-device = torch.device(configs['device'])
+    source_path = configs['source-path']
+    num_classes = configs['num-classes']
 
-model = ClassifyNet(num_classes=configs['num-classes'], pretrained=False)
-model = model.to(device)
+    export_path_fp32 = configs['export-path-fp32']
+    export_path_fp16 = configs['export-path-fp16']
 
-input = torch.ones(1, 3, 224, 224)
-input = input.to(device)
+model_fp32 = ResNet(num_classes=num_classes)
+model_fp16 = ResNet(num_classes=num_classes)
 
-model.load_state_dict(torch.load(configs['source-path'], map_location=device, weights_only=True))
-model.eval()
+model_fp32.load_state_dict(torch.load(source_path, map_location='cpu', weights_only=True))
+model_fp32.eval()
 
-if configs['precision'] == 'fp16':
-    model = model.half()
-    input = input.half()
-else:
-    model = model.float()
-    input = input.float()
+model_fp16.load_state_dict(torch.load(source_path, map_location='cpu', weights_only=True))
+model_fp16.eval()
 
-torch.onnx.export(model, input, configs['output-path'], input_names=['input'], output_names=['output'])
+model_fp32 = model_fp32.float()
+model_fp16 = model_fp16.half()
+
+inputs_fp32 = torch.randn(1, 3, 224, 224)
+inputs_fp16 = torch.randn(1, 3, 224, 224)
+
+inputs_fp32 = inputs_fp32.float()
+inputs_fp16 = inputs_fp16.half()
+
+torch.onnx.export(model_fp32, inputs_fp32, export_path_fp32, input_names=['input'], output_names=['output'])
+torch.onnx.export(model_fp16, inputs_fp16, export_path_fp16, input_names=['input'], output_names=['output'])

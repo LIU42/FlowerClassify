@@ -2,17 +2,15 @@ FROM debian:12-slim
 
 RUN mkdir /home/app
 RUN mkdir /home/app/configs
-RUN mkdir /home/app/utils
-RUN mkdir /home/app/weights
+RUN mkdir /home/app/inference
+RUN mkdir /home/app/inference/models
 
 WORKDIR /home/app
 
-COPY ./server.py /home/app/server.py
-COPY ./predict.py /home/app/predict.py
-COPY ./utils/__init__.py /home/app/utils/__init__.py
-COPY ./utils/process.py /home/app/utils/process.py
-COPY ./configs/server.yaml /home/app/configs/server.yaml
-COPY ./weights/classify-fp32.onnx /home/app/weightsclassify-fp32.onnx
+COPY ./configs/inference.yaml /home/app/configs/inference.yaml
+COPY ./inference/models/flower-fp32.onnx /home/app/inference/models/flower-fp32.onnx
+COPY ./inference/__init__.py /home/app/inference/__init__.py
+COPY ./inference/server.py /home/app/inference/server.py
 
 RUN sed -i 's|deb.debian.org|mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list.d/debian.sources
 
@@ -29,4 +27,4 @@ RUN apt-get autoclean -y
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-CMD ["flask", "--app", "server", "run", "--host=0.0.0.0", "--port=9500"]
+CMD ["flask", "--app", "inference.server", "run", "--host=0.0.0.0", "--port=9500"]
