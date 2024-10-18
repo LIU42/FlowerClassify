@@ -47,7 +47,7 @@ precision: "fp32"            # 推理运算精度，"fp32"（单精度）或 "fp
 providers:                   # ONNX Runtime Providers 参数
   - "CPUExecutionProvider"
 
-classes:                     # 花卉分类名称列表，包含所有花卉类别对应的标签（按顺序）
+flower-names:                # 花卉分类名称列表，包含所有花卉类别对应的标签（按顺序）
   - "Bellflower"
   - "Carnation"
   ...
