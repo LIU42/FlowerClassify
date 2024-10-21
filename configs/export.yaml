@@ -1,5 +1,5 @@
 source-path: "checkpoints/best.pt"
 num-classes: 10
 
-export-path-fp32: "inference/models/flower-fp32.onnx"
-export-path-fp16: "inference/models/flower-fp16.onnx"
+export-path-fp32: "inferences/models/flower-fp32.onnx"
+export-path-fp16: "inferences/models/flower-fp16.onnx"
