@@ -15,7 +15,7 @@ with open('configs/server.yaml', 'r') as configs:
 
     flower_names = configs['flower-names']
 
-session = ort.InferenceSession(f'inference/models/flower-{precision}.onnx', providers=providers)
+session = ort.InferenceSession(f'inferences/models/flower-{precision}.onnx', providers=providers)
 
 
 def decode_stream(stream):
