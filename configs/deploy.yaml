@@ -1,0 +1,18 @@
+precision: "fp32"
+
+session-providers:
+  - "CPUExecutionProvider"
+
+flower-names:
+  - "Bellflower"
+  - "Carnation"
+  - "Daisy"
+  - "Dandelion"
+  - "Lavender"
+  - "Lily"
+  - "Lotus"
+  - "Rose"
+  - "Sunflower"
+  - "Tulip"
+
+model-path: "inferences/models/flower-fp32.onnx"

@@ -1,0 +1,5 @@
+device: "cpu"
+checkpoint-path: "checkpoints/best-ckpt2.pt"
+batch-size: 16
+num-workers: 0
+num-classes: 10

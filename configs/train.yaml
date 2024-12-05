@@ -1,0 +1,16 @@
+device: "cpu"
+num-epochs: 50
+learning-rate: 0.0002
+batch-size: 32
+weight-decay: 0.01
+
+use-augment: true
+num-workers: 0
+num-classes: 10
+
+load-checkpoint: false
+load-pretrained: false
+
+load-path: "checkpoints/last-ckpt1.pt"
+best-path: "checkpoints/best-ckpt1.pt"
+last-path: "checkpoints/last-ckpt1.pt"
