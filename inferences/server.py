@@ -31,9 +31,7 @@ def letterbox(image, size=224, padding=127):
 
 
 def preprocess(image):
-    image = letterbox(image)
-
-    inputs = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).transpose((2, 0, 1))
+    inputs = cv2.cvtColor(letterbox(image), cv2.COLOR_BGR2RGB).transpose((2, 0, 1))
     inputs = inputs / 255.0
     inputs = np.expand_dims(inputs, axis=0)
 

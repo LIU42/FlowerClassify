@@ -10,7 +10,7 @@ WORKDIR /home/app
 COPY ./configs/deploy.yaml /home/app/configs/deploy.yaml
 COPY ./inferences/models/flower-fp32.onnx /home/app/inferences/models/flower-fp32.onnx
 COPY ./inferences/__init__.py /home/app/inferences/__init__.py
-COPY ./inferences/application.py /home/app/inferences/application.py
+COPY ./inferences/server.py /home/app/inferences/server.py
 
 RUN sed -i 's|deb.debian.org|mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list.d/debian.sources
 
@@ -27,4 +27,4 @@ RUN apt-get autoclean -y
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-CMD ["flask", "--app", "inferences.application", "run", "--host=0.0.0.0", "--port=9500"]
+CMD ["flask", "--app", "inferences.server", "run", "--host=0.0.0.0", "--port=9500"]
