@@ -56,13 +56,13 @@ if configs['load-checkpoint']:
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.AdamW(model.parameters(), lr=configs['learning-rate'], weight_decay=configs['weight-decay'])
 
-max_accuracy = 0.0
+best_accuracy = 0.0
 
 print(f'\n---------- Training Start At: {str(device).upper()} ----------\n')
 
 for epoch in range(configs['num-epochs']):
     model.train()
-    training_loss = 0.0
+    train_loss = 0.0
 
     for index, (inputs, labels) in enumerate(train_dataloader, start=1):
         inputs = inputs.to(device)
@@ -72,12 +72,12 @@ for epoch in range(configs['num-epochs']):
         loss = criterion(model(inputs), labels)
         loss.backward()
         optimizer.step()
-        training_loss += loss.item()
+        train_loss += loss.item()
 
         print(f'\rBatch Loss: {loss:.3f} [{index}/{train_dataloader_size}]', end='')
 
     model.eval()
-    training_loss /= train_dataloader_size
+    train_loss /= train_dataloader_size
 
     with torch.no_grad():
         valid_accuracy = 0.0
@@ -90,13 +90,13 @@ for epoch in range(configs['num-epochs']):
 
         valid_accuracy /= valid_dataset_size
 
-        if valid_accuracy > max_accuracy:
-            max_accuracy = valid_accuracy
+        if valid_accuracy > best_accuracy:
+            best_accuracy = valid_accuracy
             torch.save(model.state_dict(), configs['best-path'])
 
         torch.save(model.state_dict(), configs['last-path'])
 
-    print(f'\tEpoch: {epoch:<6} Loss: {training_loss:<10.5f} Accuracy: {valid_accuracy:.3f}')
+    print(f'\tEpoch: {epoch:<6} Loss: {train_loss:<10.5f} Accuracy: {valid_accuracy:.3f}')
 
 print('\n---------- Training Finish ----------\n')
-print(f'Max Accuracy: {max_accuracy:.3f}')
+print(f'Best Accuracy: {best_accuracy:.3f}')
