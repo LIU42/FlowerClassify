@@ -5,8 +5,9 @@ import yaml
 import numpy as np
 
 
-with open('configs/deploy.yaml', 'r') as configs:
-    configs = yaml.load(configs, Loader=yaml.FullLoader)
+with open('inferences/configs/server.yaml', 'r') as configs:
+    configs = yaml.load(configs, Loader=yaml.SafeLoader)
+
 
 session = ort.InferenceSession(configs['model-path'], providers=configs['session-providers'])
 

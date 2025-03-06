@@ -40,7 +40,7 @@ onnx~=1.16.2
 
 ### 启动 Web 服务
 
-本项目 Web 服务的默认配置文件为 <u>configs/deploy.yaml</u>，其中各个属性对应的含义如下：
+本项目 Web 服务的默认配置文件为 <u>inferences/configs/server.yaml</u>，其中各个属性对应的含义如下：
 
 ```yaml
 precision: "fp32"            # 推理运算精度，"fp32"（单精度）或 "fp16"（半精度）
@@ -175,7 +175,7 @@ onnx~=1.16.2
 
 ### Starting Web Services
 
-The default configuration file for this project's Web service is <u>configs/deploy.yaml</u>, where each attribute has the following meaning:
+The default configuration file for this project's Web service is <u>inferences/configs/server.yaml</u>, where each attribute has the following meaning:
 
 ```yaml
 precision: "fp32"            # Precision of inference operations, “fp32” (single precision) or “fp16” (half precision)
@@ -263,5 +263,3 @@ docker run --rm -p 9500:9500 --name flowerclassify flowerclassify:1.3.0
 ```
 
 *<u>Note: The above is just an example, please refer to the [Docker](https://docs.docker.com/) documentation for more details.</u>*
-
-

@@ -1,4 +1,5 @@
 import torch
+import tqdm
 import yaml
 
 import torch.utils.data as data
@@ -9,7 +10,8 @@ from models import FlowerNet
 
 
 with open('configs/eval.yaml', 'r') as configs:
-    configs = yaml.load(configs, Loader=yaml.FullLoader)
+    configs = yaml.load(configs, Loader=yaml.SafeLoader)
+
 
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -19,15 +21,15 @@ transform = transforms.Compose([
 dataset = datasets.ImageFolder('datasets/test', transform=transform)
 dataset_size = len(dataset)
 
-dataloader = data.DataLoader(dataset, batch_size=configs['batch-size'], num_workers=configs['num-workers'])
+dataloader = data.DataLoader(dataset, batch_size=configs['batch-size'], num_workers=configs['num-workers'], shuffle=False)
 dataloader_size = len(dataloader)
 
 device = torch.device(configs['device'])
 
-model = FlowerNet(num_classes=configs['num-classes'])
+model = FlowerNet(num_classes=configs['num-classes'], pretrained=False)
 model = model.to(device)
 
-print(f'\n---------- Evaluation Start At: {str(device).upper()} ----------\n')
+print(f'\n---------- Evaluation start at: {str(device).upper()} ----------\n')
 
 with torch.no_grad():
     top1_accuracy = 0.0
@@ -37,7 +39,7 @@ with torch.no_grad():
     model.load_state_dict(torch.load(configs['checkpoint-path'], map_location=device, weights_only=True))
     model.eval()
 
-    for index, (inputs, labels) in enumerate(dataloader, start=1):
+    for inputs, labels in tqdm.tqdm(dataloader, desc='Inference progress', ncols=80):
         inputs = inputs.to(device)
         labels = labels.to(device)
         outputs = model(inputs)
@@ -52,14 +54,12 @@ with torch.no_grad():
         top2_accuracy += (top2_indices == labels).sum().item()
         top3_accuracy += (top3_indices == labels).sum().item()
 
-        print(f'\rProgress: [{index}/{dataloader_size}]', end='')
-
     top1_accuracy /= dataset_size
     top2_accuracy /= dataset_size
     top3_accuracy /= dataset_size
 
-print('\n\n---------- Evaluation Finish ----------\n')
+print(f'Top1 accuracy: {top1_accuracy:.3f}')
+print(f'Top2 accuracy: {top2_accuracy:.3f}')
+print(f'Top3 accuracy: {top3_accuracy:.3f}')
 
-print(f'Top1 Accuracy: {top1_accuracy:.3f}')
-print(f'Top2 Accuracy: {top2_accuracy:.3f}')
-print(f'Top3 Accuracy: {top3_accuracy:.3f}')
+print('\n---------- Evaluation finished ----------\n')
