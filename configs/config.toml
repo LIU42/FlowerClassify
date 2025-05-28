@@ -1,0 +1,14 @@
+device = "cuda"
+learning-rate = 0.0002
+batch-size = 32
+num-epochs = 50
+num-workers = 8
+num-classes = 10
+weight-decay = 0.0001
+
+load-checkpoint = false
+load-pretrained = true
+
+load-checkpoint-path = "checkpoints/best-ckpt1.pt"
+best-checkpoint-path = "checkpoints/best-ckpt1.pt"
+last-checkpoint-path = "checkpoints/last-ckpt1.pt"
