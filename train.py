@@ -1,6 +1,5 @@
 import torch
 import toml
-import tqdm
 
 import torch.nn as nn
 import torch.optim as optim
@@ -44,6 +43,8 @@ valid_dataloader = DataLoader(valid_dataset, batch_size=configs['batch-size'], n
 train_dataloader_size = len(train_dataloader)
 valid_dataloader_size = len(valid_dataloader)
 
+log_interval = configs['log-interval']
+
 best_accuracy = 0.0
 last_accuracy = 0.0
 
@@ -66,9 +67,8 @@ print(f'\n---------- training start at: {device} ----------\n')
 
 for epoch in range(num_epochs):
     model.train()
-    train_loss = 0.0
 
-    for images, labels in tqdm.tqdm(train_dataloader, ncols=80):
+    for batch, (images, labels) in enumerate(train_dataloader, start=1):
         images = images.to(device)
         labels = labels.to(device)
 
@@ -78,19 +78,22 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
 
-        train_loss += loss.item()
+        if batch % log_interval == 0:
+            print(f'[train] [{epoch:03d}/{num_epochs:03d}] [{batch:04d}/{train_dataloader_size:04d}] loss: {loss.item():.5f}')
 
     model.eval()
-    train_loss /= train_dataloader_size
 
     with torch.no_grad():
         accuracy = 0.0
 
-        for images, labels in tqdm.tqdm(valid_dataloader, ncols=80):
+        for batch, (images, labels) in enumerate(valid_dataloader, start=1):
             images = images.to(device)
             labels = labels.to(device)
             outputs = model(images)
             accuracy += (torch.argmax(outputs, dim=1) == labels).sum().item()
+
+            if batch % log_interval == 0:
+                print(f'[valid] [{epoch:03d}/{num_epochs:03d}] [{batch:04d}/{valid_dataloader_size:04d}]')
 
         accuracy /= valid_dataset_size
 
@@ -101,7 +104,7 @@ for epoch in range(num_epochs):
         last_accuracy = accuracy
         torch.save(model.state_dict(), last_checkpoint_path)
 
-    print(f'\nepoch: {epoch + 1}/{num_epochs:<6} loss: {train_loss:<10.5f} accuracy: {accuracy:.3f}\n')
+    print(f'[valid] [{epoch:03d}/{num_epochs:03d}] accuracy: {accuracy:.4f}')
 
 print(f'best accuracy: {best_accuracy:.3f}')
 print(f'last accuracy: {last_accuracy:.3f}')

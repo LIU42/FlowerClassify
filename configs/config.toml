@@ -6,9 +6,10 @@ num-workers = 8
 num-classes = 10
 weight-decay = 0.0001
 
+log-interval = 10
 load-checkpoint = false
 load-pretrained = true
 
 load-checkpoint-path = "checkpoints/best-ckpt1.pt"
-best-checkpoint-path = "checkpoints/best-ckpt1.pt"
-last-checkpoint-path = "checkpoints/last-ckpt1.pt"
+best-checkpoint-path = "checkpoints/best-ckpt2.pt"
+last-checkpoint-path = "checkpoints/last-ckpt2.pt"

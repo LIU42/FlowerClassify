@@ -1,6 +1,5 @@
 torch~=2.6.0
 toml~=0.10.2
-tqdm~=4.67.1
 torchvision~=0.21.0
 flask~=3.1.0
 onnxruntime~=1.20.1

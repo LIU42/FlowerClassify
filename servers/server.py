@@ -7,22 +7,15 @@ import numpy as np
 
 configs = toml.load('servers/configs/config.toml')
 
-precision = configs['precision']
-providers = configs['providers']
-
 app = flask.Flask(__name__)
-
-model_path = configs['model-path']
-image_size = configs['image-size']
-
-session = ort.InferenceSession(model_path, providers=providers)
+session = ort.InferenceSession(configs['model-path'], providers=configs['providers'])
 
 
 def decode_stream(stream):
     return cv2.imdecode(np.frombuffer(stream.read(), dtype=np.uint8), cv2.IMREAD_UNCHANGED)
 
 
-def center_crop(image):
+def center_crop(image, size=224):
     current_size = min(image.shape[0], image.shape[1])
 
     x1 = (image.shape[1] - current_size) >> 1
@@ -31,7 +24,7 @@ def center_crop(image):
     x2 = x1 + current_size
     y2 = y1 + current_size
 
-    return cv2.resize(image[y1:y2, x1:x2], (image_size, image_size), interpolation=cv2.INTER_LINEAR)
+    return cv2.resize(image[y1:y2, x1:x2], (size, size), interpolation=cv2.INTER_LINEAR)
 
 
 def normalize(inputs):
@@ -42,7 +35,7 @@ def convert_inputs(image):
     converted_inputs = cv2.cvtColor(center_crop(image), cv2.COLOR_BGR2RGB).transpose((2, 0, 1))
     converted_inputs = normalize(converted_inputs)
 
-    if precision == 'fp16':
+    if configs['precision'] == 'fp16':
         return np.expand_dims(converted_inputs, axis=0).astype(np.float16)
     else:
         return np.expand_dims(converted_inputs, axis=0).astype(np.float32)

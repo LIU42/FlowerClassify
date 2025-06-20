@@ -1,5 +1,3 @@
+model-path = "servers/models/flower-fp32.onnx"
 precision = "fp32"
 providers = ["OpenVINOExecutionProvider", "CPUExecutionProvider"]
-
-image-size = 224
-model-path = "servers/models/flower-fp32.onnx"

@@ -1,6 +1,5 @@
 import torch
 import toml
-import tqdm
 import torchvision.transforms as transforms
 
 from torch.utils.data import DataLoader
@@ -28,6 +27,8 @@ device = torch.device(configs['device'])
 model = FlowerNet(num_classes=configs['num-classes'], pretrained=False)
 model = model.to(device)
 
+log_interval = configs['log-interval']
+
 print(f'\n---------- evaluation start at: {device} ----------\n')
 
 with torch.no_grad():
@@ -38,7 +39,7 @@ with torch.no_grad():
     model.load_state_dict(torch.load(configs['load-checkpoint-path'], map_location=device, weights_only=True))
     model.eval()
 
-    for images, labels in tqdm.tqdm(dataloader, ncols=80):
+    for batch, (images, labels) in enumerate(dataloader, start=1):
         images = images.to(device)
         labels = labels.to(device)
         outputs = model(images)
@@ -52,6 +53,9 @@ with torch.no_grad():
         top1_accuracy += (top1_indices == labels).sum().item()
         top2_accuracy += (top2_indices == labels).sum().item()
         top3_accuracy += (top3_indices == labels).sum().item()
+
+        if batch % log_interval == 0:
+            print(f'[valid] [{batch:04d}/{dataloader_size:04d}]')
 
     top1_accuracy /= dataset_size
     top2_accuracy /= dataset_size
