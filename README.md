@@ -1,4 +1,4 @@
-# Flower Classify
+# FlowerClassify 花卉分类识别系统
 
 *<u>v1.4.0 新变化：调整数据增强重新训练模型。</u>*
 
@@ -55,7 +55,7 @@ flask --app servers.server run --host="0.0.0.0" --port=9500
 | learning-rate        | 模型训练学习率。                                                                                |
 | weight-decay         | 模型训练权重衰减。                                                                               |
 | num-classes          | 模型输出类别数。                                                                                |
-| log-interval         | 日志输出频率。                                                     |
+| log-interval         | 日志输出频率。                                                                                 |
 | load-pretrained      | 是否使用预训练参数初始化模型权重。                                                                       |
 | load-checkpoint      | 是否加载 checkpoint 继续训练，若为 true 则从 load-path 加载模型权重，覆盖 load-pretrained 值，反之则使用初始化模型权重开始训练。 |
 | load-checkpoint-path | 训练初始模型的加载路径，同时也为待评估模型加载路径。                                                              |
